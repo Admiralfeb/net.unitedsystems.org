@@ -1,0 +1,43 @@
+﻿@page "/fetchdata"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using UnitedSystemsCooperativeWebsite.Shared.DbItems
+@* @attribute [Authorize] *@
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (allies == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    @foreach (var forecast in allies)
+    {
+        <p>@forecast.Name</p>
+    }
+}
+
+@code {
+    private Ally[]? allies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            allies = await Http.GetFromJsonAsync<Ally[]>("api/Ally");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+}
